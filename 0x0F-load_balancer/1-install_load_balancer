@@ -6,8 +6,8 @@ config=\
 '
 backend selasi-backend
         balance roundrobin
-        server 192925-web-01 3.90.70.66:80 check
-        server 192925-web-02 100.26.231.45:80 check
+        server 125885-web-01 54.146.81.189 check
+        server 125885-web-02 54.237.25.95:80 check
 frontend selasi-frontend
         bind *:80
         mode http
