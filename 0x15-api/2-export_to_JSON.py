@@ -1,18 +1,34 @@
 #!/usr/bin/python3
-'''Extend your Python script to export data in the JSON format.'''
+"""
+A Python script that, using this REST API, for a given employee ID,
+returns information about his/her TODO list progress and
+export data in the JSON format.
+"""
 
 import json
 import requests
-import sys
+from sys import argv
+
 
 if __name__ == '__main__':
-    url = 'https://jsonplaceholder.typicode.com/'
-    user = requests.get(url + 'users/{}'.format(sys.argv[1])).json()
-    todos = requests.get(url + 'todos', params={"userId": sys.argv[1]}).json()
+    eid = argv[1]
+    userUrl = "https://jsonplaceholder.typicode.com/users"
+    url = userUrl + "/" + eid
 
-    with open("{}.json".format(sys.argv[1]), "w") as file:
-        json.dump({sys.argv[1]: [{
-            "task": todo.get("title"),
-            "completed": todo.get("completed"),
-            "username": user.get("username")
-        } for todo in todos]}, file)
+    response = requests.get(url)
+    uname = response.json().get('username')
+
+    todoUrl = url + "/todos"
+    response = requests.get(todoUrl)
+    tasks = response.json()
+
+    dic = {eid: []}
+    for task in tasks:
+        dic[eid].append({
+            "task": task.get('title'),
+            "completed": task.get('completed'),
+            "username": uname
+        })
+
+    with open('{}.json'.format(eid), 'w') as f:
+        json.dump(dic, f)
